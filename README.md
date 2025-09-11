@@ -31,6 +31,39 @@ MSSQL
     cli:  sqlcmd -S localhost,1433 -U SA -P 'BetterUseP0stgres!' -C
 ```
 
+Dbt profiles examples:
+
+```yaml
+lf_dev_postgres:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      password: postgres
+      port: 5432
+      dbname: test_db
+      schema: not used for prod!
+      threads: 1
+      keepalives_idle: 0
+
+lf_dev_mssql:
+  target: prod
+  outputs:
+    prod:
+      type: sqlserver
+      driver: ODBC Driver 18 for SQL Server
+      server: localhost
+      port: 1433
+      database: master
+      schema: not used for prod!
+      trust_cert: true
+      windows_login: false
+      user: SA
+      password: BetterUseP0stgres!
+```
+
 
 Fastest way to reset all databases (only works when in this folder):
 
@@ -38,7 +71,7 @@ Fastest way to reset all databases (only works when in this folder):
 docker-compose kill && docker-compose down -v && docker-compose up -d
 ```
 
-Or interact containers (works everywhere):
+Or interact with containers (works everywhere):
 
 ```bash
 # stop containers
