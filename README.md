@@ -58,6 +58,18 @@ docker exec -it lf_dev_mssql bash
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'BetterUseP0stgres!' -C
 ```
 
+## Ingestion
+
+The containers mount the local `ingest` folder to `/ingest` in the containers.
+
+For MSSQL, we have a script to link parquet files as views. (Postgers: TODO)
+Edit `/ingest/ingest_mssql.sh` to change schema name and db name if needed.
+Then copy your parquet files to `ingest/data` and run:
+
+```bash
+docker exec -it lf_dev_mssql bash /ingest/ingest_mssql.sh
+```
+
 
 ## Note on MSQL under arm:
 on arm (macos) we have two options: emulate the platform (slow) or use another image.
