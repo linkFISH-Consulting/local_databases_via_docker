@@ -1,7 +1,6 @@
 
 # Set the stack name
 name: lf_dev
-version: '3.8'
 
 services:
   postgres:
@@ -46,6 +45,28 @@ services:
       - mssqldata:/var/opt/mssql
       - ./ingest/:/ingest/
 
+  s3:
+    # this image uses scratch as base, so we have no shell, only the `garage` binary
+    # to create a bucket and get credentials, you need to run: ./s3/init_s3.sh
+    image: dxflrs/garage:v2.1.0
+    container_name: lf_dev_s3
+    environment:
+      GARAGE_API_ADMIN_TOKEN: "admin-token"
+    ports:
+      - "3900:3900"   # S3 API
+      - "3901:3901"   # Admin API
+    volumes:
+      # PS 2025-09-18: I like using the volumes for easy reset
+      # but for s3 it might be convenient to persist bucket and key config.
+      # maybe we can split the data and meta into their own volumes, or keep meta in
+      # in folder mount:
+      # - ./s3/meta:/var/lib/garage/meta
+      # - ./s3/data:/var/lib/garage/data
+      - s3data:/var/lib/garage
+      - ./s3/garage.toml:/etc/garage.toml:ro
+    command: ["/garage", "server"]
+
 volumes:
+  s3data:
   pgdata:
   mssqldata:

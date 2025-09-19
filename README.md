@@ -71,6 +71,19 @@ Fastest way to reset all databases (only works when in this folder):
 docker-compose kill && docker-compose down -v && docker-compose up -d
 ```
 
+Note however, that this will delete all data from all services.
+To do it per service:
+
+```bash
+docker kill lf_dev_postgres && docker rm -f lf_dev_postgres && docker volume rm lf_dev_pgdata && docker compose up -d
+
+docker kill lf_dev_mssql && docker rm -f lf_dev_mssql && docker volume rm lf_dev_mssqldata && docker compose up -d
+
+# beware, for s3, you will need to manually recreate bucket and keys, which will
+# reset your login details (access key and secret key)
+docker kill lf_dev_s3 && docker rm -f lf_dev_s3 && docker volume rm lf_dev_s3data && docker compose up -d
+```
+
 Or interact with containers (works everywhere):
 
 ```bash
